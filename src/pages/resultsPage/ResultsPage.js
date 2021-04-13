@@ -31,52 +31,67 @@ const api = createApi({
     );
   };
   
-  const Body = () => {
-    const [data, setPhotosResponse] = useState(null);
   
-    useEffect(() => {
-      api.search
-        .getPhotos({ query: "cat", orientation: "landscape" })
-        .then(result => {
-          setPhotosResponse(result);
-        })
-        .catch(() => {
-          console.log("something went wrong!");
-        });
-    }, []);
   
-    if (data === null) {
-      return <div>Loading...</div>;
-    } else if (data.errors) {
-      return (
-        <div>
-          <div>{data.errors[0]}</div>
-          <div>PS: Make sure to set your access token!</div>
-        </div>
-      );
-    } else {
-      return (
-        <div className="feed">
-          <ul className="columnUl">
-            {data.response.results.map(photo => (
-              <li key={photo.id} className="li">
-                <PhotoComp photo={photo} />
-              </li>
-            ))}
-          </ul>
-        </div>
-      );
-    }
-  };
-
 
 export default function ResultPage() { 
     const { resultsPage } = useParams();
     const recivedPhotoShort = resultsPage.slice(1, resultsPage.length);
     const [val, setValue] = useState("");
     const [data, setPhotosResponse] = useState(null);
+    const [dataID, setDataId] = useState([]);
 
+    const Body = () => {
+    
+      useEffect(() => {
+        api.search
+          .getPhotos({ query: "cat", orientation: "landscape" })
+          .then(result => {
+            setPhotosResponse(result);
+            data.response.results.map((item) => {
+              console.log(item)
+              dataID.push(item)
+            })
+  
+          })
+          .catch(() => {
+            console.log("something went wrong!");
+          });
+      }, []);
+    
+      if (data === null) {
+        return <div>Loading...</div>;
+      } else if (data.errors) {
+        return (
+          <div>
+            <div>{data.errors[0]}</div>
+            <div>PS: Make sure to set your access token!</div>
+          </div>
+        );
+      } else {
+        return (
+          <div className="feed">
+            <ul className="columnUl">
+              {data.response.results.map(photo => (
+                <li key={photo.id} className="li">
+                  <PhotoComp photo={photo} />
+                </li>
+              ))}
+            </ul>
+          </div>
+        );
+      }
+    };
 
+    function photosData ()  {
+      return dataID;
+    }
+    function renderPhotos(state, val) {
+      return (
+        state.id.toLowerCase().indexOf(val.toLowerCase()) !== -1
+    );
+
+    }
 
         return (
             <>
@@ -86,9 +101,11 @@ export default function ResultPage() {
             <h3>React Autocomplete Demo</h3>
                 <Autocomplete
                     value={val}
-                    items={MoviesData()}
-                    getItemValue={item => item.title}
-                    shouldItemRender={renderMovieTitle}
+                    //items={MoviesData()}
+                    items={photosData()}
+                    getItemValue={item => item.id}
+                    //shouldItemRender={renderMovieTitle}
+                    shouldItemRender={renderPhotos}
                     renderMenu={item => (
                         <div className="dropdown">
                             {item}
@@ -96,7 +113,7 @@ export default function ResultPage() {
                     )}
                     renderItem={(item, isHighlighted) =>
                         <div   div className={`item ${isHighlighted ? 'selected-item' : ''}`}>
-                            {item.title}
+                            {item.id}
                         </div>
                         }
                     onChange={(event, val) => setValue(val)}
