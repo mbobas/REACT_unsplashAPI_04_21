@@ -13,7 +13,7 @@ function App() {
                 <Switch>
                     <Route exact path="/"  component={Home} />
                     <Route path="/home" component={Home} />
-                    <Route exact path="/TestAutocomplete" component={TestAutocomplete} />
+                    <Route exact path="/TestAutocomplete" component={Home} />
                     <Route exact path="/:resultsPage" component={ResultsPage} />
                     
                 </Switch>

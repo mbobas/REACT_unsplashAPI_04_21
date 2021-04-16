@@ -1,0 +1,116 @@
+import React, { useState, useEffect } from 'react';
+import { createApi, toJson } from "unsplash-js";
+import "./resultPage.css"
+import { useParams } from 'react-router';
+import Autocomplete from 'react-autocomplete';
+import '../test/TestAutocomplete.css';
+
+const api = createApi({
+    // Don't forget to set your access token here!
+    // See https://unsplash.com/developers
+    accessKey: "sDI3L3I2mgA91a4deHN4BevefU63v8_yMhgYmrtHy6k"
+  });
+  
+  const PhotoComp = ({ photo }) => {
+    const { user, urls } = photo;
+  
+    return (
+      <>
+        <img className="img" src={urls.regular} alt="img" />
+        <a
+          className="credit"
+          target="_blank"
+          rel="noreferrer"
+          href={`https://unsplash.com/@${user.username}`}
+        >
+          {user.name}
+        </a>
+      </>
+    );
+  };
+  
+  const Body = ({data}) => {
+    console.log("BODY")
+  
+    if (data === null) {
+      return <div>Loading...</div>;
+    } else if (data.errors) {
+      return (
+        <div>
+          <div>{data.errors[0]}</div>
+          <div>PS: Make sure to set your access token!</div>
+        </div>
+      );
+    } else {
+      return (
+        <div className="feed">
+          <ul className="columnUl">
+            {data.response.results.map(photo => (
+              <li key={photo.id} className="li">
+                <PhotoComp photo={photo} />
+              </li>
+            ))}
+          </ul>
+        </div>
+      );
+    }
+  };
+
+
+export default function ResultPage() { 
+    const { resultsPage } = useParams();
+    const recivedPhotoShort = resultsPage.slice(1, resultsPage.length);
+    const [val, setValue] = useState(recivedPhotoShort);
+   
+    const [data, setPhotosResponse] = useState(null);
+    const [dataID, setDataId] = useState([]);
+
+     useEffect(() => {
+      api.search
+        .getCollections({ query: `${val}`, page: 1, perpage: 20, orientation: "landscape" })
+        .then(result => {
+          setPhotosResponse(result);
+
+        })
+        .catch(() => {
+          console.log("something went wrong!");
+        });
+    }, []);
+
+  //   const updatePhotoCollections = (photo: any) => {
+  //     setPhoto(photo);
+  //     unsplash.search.collections(photo, 1, 20)
+  //         .then(toJson)
+  //         .then(json => {
+  //             console.log("updateCollections");
+  //             console.log(json.results);
+  //             setResultCollection(json.results)
+  //         });
+  // }
+    // useEffect(() => {
+    //   api.search
+    //     .getPhotos({ query: `${val}`, page: 1, perpage: 20, orientation: "landscape" })
+    //     .then(result => {
+    //       setPhotosResponse(result);
+
+    //     })
+    //     .catch(() => {
+    //       console.log("something went wrong!");
+    //     });
+    // }, []);
+
+
+        return (
+            <>
+            <p>ResultPage {recivedPhotoShort}</p>
+            
+            <div className="autocomplete-wrapper">
+            <h3>React Autocomplete Demo</h3>
+                <Body data={data}/>
+            </div>
+
+            </>
+            
+        );
+}
+

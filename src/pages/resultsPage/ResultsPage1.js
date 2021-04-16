@@ -4,7 +4,6 @@ import "./resultPage.css"
 import { useParams } from 'react-router';
 import Autocomplete from 'react-autocomplete';
 import '../test/TestAutocomplete.css';
-import { Redirect, Link} from 'react-router-dom';
 
 const api = createApi({
     // Don't forget to set your access token here!
@@ -129,7 +128,6 @@ export default function ResultPage() {
                     onSelect={val => setValue(val)}
                 />
             </div>
-            <Link to={'/'} >HOME </Link>
            
             </>
             

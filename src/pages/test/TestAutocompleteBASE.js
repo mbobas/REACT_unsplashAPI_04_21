@@ -1,39 +1,21 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { MoviesData, renderMovieTitle } from './movies-data';
 import Autocomplete from 'react-autocomplete';
 import './TestAutocomplete.css';
 
-var table = [];
-
-var wordListJson = require("word-list-json");
-for (var i=0; i<=1; i++ ){
-  //console.log(wordListJson[i]);
-  table.push( { "title": `${wordListJson[i]}` })
-
-}
-
-const tableData = () => {
-  return table;
-}
-
-console.log(table);
-
-
-class TestAutocomplete extends Component {
+export default function TestAutocomplete() {
   
-  state = { val: '' };
- 
-  render() {
-    
+  const [val, setValue] = useState("");
+
     return (
       <div className="autocomplete-wrapper">
         <h3>React Autocomplete Demo</h3>
         <Autocomplete
-          value={this.state.val}
-          items={tableData()}
+          value={val}
+          items={MoviesData()}
           getItemValue={item => item.title}
           shouldItemRender={renderMovieTitle}
-          renderMenu={item => (  //map function only 5 items
+          renderMenu={item => (
             <div className="dropdown">
               {item}
             </div>
@@ -43,14 +25,10 @@ class TestAutocomplete extends Component {
               {item.title}
             </div>
           }
-          onChange={(event, val) => this.setState({ val })}
-          onSelect={val => this.setState({ val })}
-          
+          onChange={(event, val) => setValue(val)}
+          onSelect={val => setValue(val)}
         />
       </div>
     );
-  }
 }
-
-export default TestAutocomplete;
 

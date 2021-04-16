@@ -77,7 +77,17 @@ export function MoviesData() {
 }
 
 export function renderMovieTitle(state, val) {
-    return (
-        state.title.toLowerCase().indexOf(val.toLowerCase()) !== -1
-    );
+    var counter =0;
+    while (counter <10 ){
+        return (
+            state.title.toLowerCase().indexOf(val.toLowerCase()) !== -1
+            
+        );
+    }
+    
+// export function renderMovieTitle(state, val) {
+//     return (
+//         state.title.toLowerCase().indexOf(val.toLowerCase()) !== -1
+        
+//     );
 }
